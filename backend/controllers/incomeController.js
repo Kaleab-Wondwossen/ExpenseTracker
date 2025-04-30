@@ -42,7 +42,6 @@ export const getAllIncomes = async (req, res) => {
     }
   };
 
-
   export const updateIncome = async (req, res) => {
     try {
       const updatedIncome = await Income.findByIdAndUpdate(
