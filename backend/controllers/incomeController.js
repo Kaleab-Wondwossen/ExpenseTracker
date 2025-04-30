@@ -31,3 +31,28 @@ export const deleteIncome = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+// ✅ New function to get ALL incomes without user_id filter
+export const getAllIncomes = async (req, res) => {
+    try {
+      const incomes = await Income.find();
+      res.status(200).json(incomes);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
+
+
+  export const updateIncome = async (req, res) => {
+    try {
+      const updatedIncome = await Income.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+      );
+      res.status(200).json(updatedIncome);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
+  

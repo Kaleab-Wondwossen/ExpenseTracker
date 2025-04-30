@@ -28,3 +28,27 @@ export const deleteExpense = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+// ✅ New function to get ALL expenses without user_id filter
+export const getAllExpenses = async (req, res) => {
+    try {
+      const expenses = await Expense.find();
+      res.status(200).json(expenses);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
+
+  export const updateExpense = async (req, res) => {
+    try {
+      const updatedExpense = await Expense.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true } // return updated doc
+      );
+      res.status(200).json(updatedExpense);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
+  
