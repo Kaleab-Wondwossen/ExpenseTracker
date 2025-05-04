@@ -107,7 +107,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                         fontWeight: FontWeight.bold,
                         color: AppColors.primaryText)),
               ),
-             
               FutureBuilder<List<Expense>>(
                 future: fetchExpensesByUser("660f8cf5c92e4b1211fcfd84"),
                 builder: (context, snapshot) {
@@ -121,21 +120,23 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
                   final expenses = snapshot.data!;
 
+                  // ✅ Sort expenses by date (descending)
+                  expenses.sort((a, b) =>
+                      DateTime.parse(b.date).compareTo(DateTime.parse(a.date)));
+
                   return ListView.builder(
-                    shrinkWrap:
-                        true, // ✅ Allow ListView to take only the height it needs
-                    physics:
-                        const NeverScrollableScrollPhysics(), // ✅ Disable internal scrolling
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: expenses.length,
                     itemBuilder: (context, index) {
                       final expense = expenses[index];
 
                       return CategorySpendingCard(
                         category: expense.category,
-                        paymentMethod: "Credit Card", // Customize later
+                        paymentMethod: "Credit Card",
                         date: DateTime.tryParse(expense.date) ?? DateTime.now(),
                         totalSpent: expense.amount,
-                        totalBudget: 3000, // Customize later
+                        totalBudget: 3000,
                       );
                     },
                   );

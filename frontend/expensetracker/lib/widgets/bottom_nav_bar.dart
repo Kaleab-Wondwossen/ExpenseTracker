@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/colors.dart';
 import '../constants/sizes.dart';
+import '../screens/add_screen.dart';
 import '../screens/analytics_screen.dart';
 import '../screens/home_screen.dart';
 
@@ -41,12 +42,12 @@ class _MyNavBarState extends State<MyNavBar> {
             icon: Icon(Icons.home_rounded), label: 'Home', tooltip: "Home"),
         BottomNavigationBarItem(
             icon: Icon(Icons.card_membership),
-           label: 'Transactions',
+            label: 'Transactions',
             tooltip: "Transactions"),
         BottomNavigationBarItem(
             icon: Icon(Icons.analytics), label: 'Stats', tooltip: "Stats"),
         BottomNavigationBarItem(
-            icon: Icon(Icons.person), label: 'Profile', tooltip: "Profile"),
+            icon: Icon(Icons.add), label: 'Add', tooltip: "Add"),
       ],
       onTap: (index) {
         if (widget.index != index) {
@@ -91,18 +92,16 @@ class _MyNavBarState extends State<MyNavBar> {
               );
               break;
             case 3:
-              // Navigator.push(
-              //   context,
-              //   PageRouteBuilder(
-              //     pageBuilder: (context, animation1, animation2) =>
-              //         const ProfileScreen(),
-              //     transitionDuration: Duration.zero, // No transition duration
-              //     reverseTransitionDuration:
-              //         Duration.zero, // No reverse transition duration
-              //   ),
-              // );
-              break;
-            case 4:
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  pageBuilder: (context, animation1, animation2) =>
+                      const ServicesScreen(),
+                  transitionDuration: Duration.zero, // No transition duration
+                  reverseTransitionDuration:
+                      Duration.zero, // No reverse transition duration
+                ),
+              );
               break;
           }
         }
