@@ -55,4 +55,23 @@ class ApiService {
       throw Exception('Failed to add expense: ${response.body}');
     }
   }
+
+  static Future<void> deleteExpense(String id) async {
+  final response = await http.delete(Uri.parse('$baseUrl/expenses/$id'));
+  if (response.statusCode != 200) {
+    throw Exception('Failed to delete expense');
+  }
+}
+
+static Future<void> updateExpense(String id, Map<String, dynamic> updatedData) async {
+  final response = await http.put(
+    Uri.parse('$baseUrl/expenses/$id'),
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode(updatedData),
+  );
+  if (response.statusCode != 200) {
+    throw Exception('Failed to update expense');
+  }
+}
+
 }

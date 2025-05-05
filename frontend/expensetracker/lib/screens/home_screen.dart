@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
         automaticallyImplyLeading: false,
         toolbarHeight: AppSizes.largeGap * 1.5, // increase the AppBar height
         flexibleSpace: Padding(
-          padding: EdgeInsets.only(top: AppSizes.largeGap*.65, left: 0),
+          padding: EdgeInsets.only(top: AppSizes.largeGap * .65, left: 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -113,65 +113,76 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // SizedBox(height: AppSizes.smallGap),
-                    BalanceFlipCard(
-                      balance: balance,
-                      saturation: totalIncome == 0
-                          ? 0
-                          : (totalExpense / totalIncome).clamp(0.0, 1.0),
-                      cardHolder: "Kalab Wondwossen",
-                      cardNumber: "1234 5678 9012 3456",
-                      expiryDate: "08/26",
-                    ),
-                    SizedBox(height: AppSizes.smallGap),
-                    Padding(
-                      padding:
-                          EdgeInsets.fromLTRB(0, 0, AppSizes.largeGap * 7.5, 0),
-                      child: Text("Transactions",
-                          style: TextStyle(
-                              fontSize: AppSizes.secondaryFontSize,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primaryText)),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        PercentageCard(
-                          isIncome: true,
-                          percentage: (totalIncome == 0
-                              ? 0
-                              : (totalExpense / totalIncome) * 100),
-                        ),
-                        PercentageCard(
-                          isIncome: false,
-                          percentage: (totalExpense == 0
-                              ? 0
-                              : (totalIncome / totalExpense)),
-                        ),
-                      ],
-                    ),
-                    FutureBuilder<List<TransactionItem>>(
-                      future: loadTransactions("660f8cf5c92e4b1211fcfd84"),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const CircularProgressIndicator();
-                        }
+            : RefreshIndicator(
+                onRefresh: loadFinancialData, // 🔁 Triggers on swipe-down
+                color: AppColors.primaryIconColor, // Progress spinner color
+                backgroundColor: AppColors.cardBackgroundColor,
+                child: SingleChildScrollView(
+                  physics:
+                      const AlwaysScrollableScrollPhysics(), // ✅ Required for pull even when list is short
+                  child: Column(
+                    children: [
+                      // SizedBox(height: AppSizes.smallGap),
+                      BalanceFlipCard(
+                        balance: balance,
+                        saturation: totalIncome == 0
+                            ? 0
+                            : (totalExpense / totalIncome).clamp(0.0, 1.0),
+                        cardHolder: "Kalab Wondwossen",
+                        cardNumber: "1234 5678 9012 3456",
+                        expiryDate: "08/26",
+                      ),
+                      SizedBox(height: AppSizes.smallGap),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                            0, 0, AppSizes.largeGap * 7.5, 0),
+                        child: Text("Transactions",
+                            style: TextStyle(
+                                fontSize: AppSizes.secondaryFontSize,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primaryText)),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          PercentageCard(
+                            isIncome: true,
+                            percentage: (totalIncome == 0
+                                ? 0
+                                : (totalExpense / totalIncome) * 100),
+                          ),
+                          PercentageCard(
+                            isIncome: false,
+                            percentage: (totalExpense == 0
+                                ? 0
+                                : (totalIncome / totalExpense)),
+                          ),
+                        ],
+                      ),
+                      FutureBuilder<List<TransactionItem>>(
+                        future: loadTransactions("660f8cf5c92e4b1211fcfd84"),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return const CircularProgressIndicator();
+                          }
 
-                        final transactions = snapshot.data!;
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: transactions.length,
-                          itemBuilder: (context, index) {
-                            return TransactionTile(item: transactions[index]);
-                          },
-                        );
-                      },
-                    )
-                  ],
+                          final transactions = snapshot.data!;
+                          final limitedTransactions =
+                              transactions.take(20).toList(); // ✅ Limit to 20
+
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: limitedTransactions.length,
+                            itemBuilder: (context, index) {
+                              return TransactionTile(
+                                  item: limitedTransactions[index]);
+                            },
+                          );
+                        },
+                      )
+                    ],
+                  ),
                 ),
               ),
       ),
